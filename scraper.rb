@@ -1,7 +1,7 @@
 require 'scraperwiki'
 require 'mechanize'
 
-starting_url = 'http://da.bundaberg.qld.gov.au/modules/ApplicationMaster/default.aspx?page=found&1=thisweek&4a=333,322,321,324,323,325&6=F'
+starting_url = 'https://da.bundaberg.qld.gov.au/modules/ApplicationMaster/default.aspx?page=found&1=thisweek&4a=333,322,321,324,323,325&6=F'
 comment_url = 'mailto:CEO@bundaberg.qld.gov.au'
 
 def clean_whitespace(a)
@@ -20,7 +20,7 @@ def scrape_table(doc, comment_url)
     h = tds.map{|td| td.inner_html}
 
     record = {
-      'info_url' => ("http://da.bundaberg.qld.gov.au/modules/ApplicationMaster/" + tds[0].at('a')['href']).to_s.strip,
+      'info_url' => ("https://da.bundaberg.qld.gov.au/modules/ApplicationMaster/" + tds[0].at('a')['href']).to_s.strip,
       'comment_url' => comment_url,
       'council_reference' => clean_whitespace(h[1]),
       'date_received' => Date.strptime(clean_whitespace(h[2]), '%d/%m/%Y').to_s,
