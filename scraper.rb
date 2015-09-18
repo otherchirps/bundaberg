@@ -28,11 +28,16 @@ def scrape_table(doc, comment_url)
       'description' => CGI::unescapeHTML(clean_whitespace(h[3].split('<br>')[1..-1].join)),
       'date_scraped' => Date.today.to_s
     }
-    
-    if ScraperWiki.select("* from data where `council_reference`='#{record['council_reference']}'").empty? 
+
+    begin
+      if ScraperWiki.select("* from data where `council_reference`='#{record['council_reference']}'").empty?
+        ScraperWiki.save_sqlite(['council_reference'], record)
+      else
+        puts "Skipping already saved record " + record['council_reference']
+      end
+    rescue SqliteMagic::NoSuchTable
+      # Oops. New db... no table to select from yet.
       ScraperWiki.save_sqlite(['council_reference'], record)
-    else
-      puts "Skipping already saved record " + record['council_reference']
     end
   end
 end
